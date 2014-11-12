@@ -1,12 +1,140 @@
 <!DOCTYPE html>
 <html>
 <head><title>Game</title><head>
+<script src="jquery-1.11.1.min.js"></script>
+<script src="Sketch.js"></script>
+<script type="text/javascript">
+
+function getImage(lvl){
+	$("#header").replaceWith("<h1 id='header'>Level "+lvl+": Draw your sketch below. (Allow up to 5 seconds for drawing to finish uploading to server)</h1>");
+
+	var str = "<canvas id='"+lvl+"' width='400' height='400' style='border:1px solid #000000;'></canvas>";
+
+	$("canvas").replaceWith(str);
+
+	
+	$.ajax({
+			url: "/get_image",
+
+			data: {
+				// name: "<%= name %>",
+				level: lvl
+			},
+
+			type: "GET",
+
+			dataType: "text",
+
+			success: function(dataURL){
+				// console.log(dataURL);
+				// $("canvas").attr("id","canvas"+lvl);
+				var canvas = $("canvas").get(0);
+
+				var context = canvas.getContext('2d');
+
+				var imageObj = new Image();
+
+				imageObj.onload = function(){
+					context.drawImage(this,0,0);
+				};
+
+				imageObj.src = dataURL;
+
+				
+				// var str = "background: url("+dataURL+")";
+
+
+				// $("canvas").attr("style",str);
+			},
+
+			error: function(xhr,status,errorThrown){
+				// $("canvas").sketch();
+				// $("#header").replaceWith(errorThrown);
+			}
+	})
+
+	$("canvas").click(function(){
+		console.log(this.toDataURL());
+		postImage(this.id,this.toDataURL());
+		// console.log($("canvas").get(0).toDataURL());
+	})
+
+	$("canvas").sketch();
+}
+
+function postImage(lvl,dataURL){
+	$.ajax({
+			url: "/post_image",
+
+			data: {
+				// name: "<%= name %>",
+				level: lvl,
+				data: dataURL
+			},
+
+			type: "POST",
+
+			dataType: "text",
+
+			success: function(){
+				alert('success');
+			}
+	})
+}
+
+$(document).ready(function(){
+	getImage(1);
+	
+	// $("canvas").sketch();
+	// $("canvas").click(function(){
+	// 	postImage(this.id,$("canvas").get(0).toDataURL());
+	// })
+	$("button").click(function(){
+		getImage(this.id);
+
+		// switch (this.id){
+		// 	case "l1":
+		// 		console.log("test");
+		// 		break;
+		// 	case "l2":
+		// 		console.log("test2");
+		// 		break;
+		// 	case "l3":
+		// 		console.log("test3");
+		// 		break;
+		// 	case "l4":
+		// 		console.log("test4");
+		// 		break;
+		// 	case "l5":
+		// 		console.log("test5");
+		// 		break;
+		// }
+	})
+})
+
+
+</script>
 <body>
 
-	<h1>Current Level: <%= level %></h1>
+	<p><h1>
 
-	<p><a href="../increment">Increment level!</a></p>
-	<p><a href="../dispatch.fcgi">Return</a></p>
+	<p><h1 id="header"></h1></p>
+
+	<canvas id="canvas" width="400" height="400"></canvas>
+
+
+	<!-- <p><a href="../increment">Increment level!</a></p>
+	<p><a href="../">Return</a></p> -->
+
+	<p><h2>Select level below</h2></p>
+
+	<p><button id="1">Level 1</button></p>
+	<p><button id="2">Level 2</button></p>
+	<p><button id="3">Level 3</button></p>
+	<p><button id="4">Level 4</button></p>
+	<p><button id="5">Level 5</button></p>
+
+
 
 
 </body>

@@ -29,10 +29,8 @@ end
 
 # Define your Sinatra application here
 class MyApp < Sinatra::Application
-    db = SQLite3::Database.open "names.db"
+db = SQLite3::Database.open "names.db"
 db.execute "CREATE TABLE IF NOT EXISTS Users(name TEXT, level INT)"
-
-user = ""
 
 get '/' do
 	if (request.cookies[request.ip])
@@ -54,27 +52,44 @@ end
 
 get '/logout' do
 	response.delete_cookie(request.ip)
-	redirect to('../dispatch.fcgi')
+	redirect to('/')
 end
 
 get '/new_game' do
-	lev = db.execute "SELECT level FROM Users WHERE name='#{user}'"
-	erb :game, :locals => {:level => lev[0][0]}
-end
-
-get '/increment' do
-	lev = db.execute "SELECT level FROM Users WHERE name='#{user}'"
-	db.execute "UPDATE Users SET level=#{lev[0][0].to_i+1} WHERE name='#{user}'"
-	redirect to('../new_game')
+	user = request.cookies[request.ip]
+	lev = db.execute "SELECT level FROM Users WHERE name='#{}'"
+	erb :game, :locals => {:name => user}
 end
 
 get '/continue_game' do
-	redirect to ('../dispatch.fcgi')
+	redirect to ('/')
 end
 
 get '/profile' do
+	user = request.cookies[request.ip]
 	lev = db.execute "SELECT level FROM Users WHERE name='#{user}'"
 	erb :profile, :locals => {:level => lev[0][0]}
+end
+
+post '/post_image' do
+	user = request.cookies[request.ip]
+	level = params[:level]
+	data = params[:data]
+
+	unless Dir.exists?(File.join("images","#{user}"))
+		Dir.mkdir(File.join("images","#{user}"))
+	end
+
+	file = File.open(File.join("images","#{user}","#{level}"),"w")
+
+	file.write(data)
+end
+
+get '/get_image' do
+	user = request.cookies[request.ip]
+	level = params[:level]
+	out = File.open(File.join("images","#{user}","#{level}")).read
+	return out
 end
 end
 

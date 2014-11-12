@@ -1,0 +1,42 @@
+<html>
+<head>
+<title>Week 8</title>
+<script src="jquery-1.11.1.min.js"></script>
+<script type="text/javascript">
+
+$(document).ready(function() {
+  console.log("Hello world!");
+
+  $("#getStuffButton").click(function() {
+    //console.log("clicked!");
+    $.ajax(
+      {
+        url: "cgi-bin/week8.py",
+        type: "GET",
+        //dataType: "text", // "json", "html"
+        dataType: "json",
+
+	success: function(dat) {
+	  console.dir(dat);
+	  $("#stuff").append('<li>' + dat.name + ' - ' + dat.age + '</li>');
+	},
+
+      }
+    );
+  });
+
+}); 
+
+</script>
+</head>
+
+<body>
+
+<h1>My title</h1>
+
+<button id="getStuffButton">Get stuff!</button>
+
+<div id="stuff"></div>
+
+</body>
+</html>
