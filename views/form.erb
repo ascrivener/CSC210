@@ -5,9 +5,15 @@
 
 	<h1>Log in:</h1>
 
+	<% if wrong_pass %>
+		<h3>Wrong pass!</h3>
+	<% end %>
+
 	<form method="post" action="/dispatch.fcgi">
 
-	Name: <input name="user_name" type=text size="30"/>
+	<p>Name: <input name="user_name" type=text size="30"/></p>
+	<!-- <input type="submit"/> -->
+	<p>Password: <input name="user_pass" type=text size="30"/></p>
 	<input type="submit"/>
 	</form>
 
