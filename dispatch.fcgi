@@ -14,7 +14,7 @@ ENV["GEM_HOME"] = "/home2/ascriven/ruby/gems"
 # sinatra should load now
 require 'sinatra'
 require 'sqlite3'
-require 'fileutils'
+# require 'fileutils'
 
 module Rack
   class Request
@@ -52,6 +52,7 @@ post '/' do
 		if (pass != (db.execute "SELECT pass FROM Users WHERE name='#{user}'")[0][0].to_s)
 			erb :form, :locals => {:wrong_pass => true}
 		else
+			response.set_cookie(request.ip, :value => user, :expires => Time.now + 3600*24)
 			erb :main, :locals => {:name => user}
 		end
 	else
@@ -92,17 +93,13 @@ post '/post_save' do
 		Dir.mkdir(File.join("saves","#{user}"))
 	end
 
-	file = File.open(File.join("saves","#{user}","data"),"w")
-
-	file.write(save)
+	File.open(File.join("saves","#{user}","data"),"w").write(save)
 end
 
 get '/get_save' do
 	user = request.cookies[request.ip]
 	# level = params[:level]
-	out = File.open(File.join("saves","#{user}","data")).read
-
-	return out
+	return File.open(File.join("saves","#{user}","data")).read
 end
 end
 

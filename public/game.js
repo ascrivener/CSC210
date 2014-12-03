@@ -1,80 +1,3 @@
-// function getImage(lvl){
-// 	$("#header").replaceWith("<h1 id='header'>Level "+lvl+": Draw your sketch below. (Allow up to 5 seconds for drawing to finish uploading to server)</h1>");
-
-// 	var str = "<canvas id='"+lvl+"' width='400' height='400' style='border:1px solid #000000;'></canvas>";
-
-// 	$("canvas").replaceWith(str);
-
-	
-// 	$.ajax({
-// 			url: "/get_image",
-
-// 			data: {
-// 				// name: "<%= name %>",
-// 				level: lvl
-// 			},
-
-// 			type: "GET",
-
-// 			dataType: "text",
-
-// 			success: function(dataURL){
-// 				// console.log(dataURL);
-// 				// $("canvas").attr("id","canvas"+lvl);
-// 				var canvas = $("canvas").get(0);
-
-// 				var context = canvas.getContext('2d');
-
-// 				var imageObj = new Image();
-
-// 				imageObj.onload = function(){
-// 					context.drawImage(this,0,0);
-// 				};
-
-// 				imageObj.scy.rc = dataURL;
-
-				
-// 				// var str = "background: url("+dataURL+")";
-
-
-// 				// $("canvas").attr("style",str);
-// 			},
-
-// 			error: function(xhr,status,errorThrown){
-// 				// $("canvas").sketch();
-// 				// $("#header").replaceWith(errorThrown);
-// 			}
-// 	})
-
-// 	$("canvas").click(function(){
-// 		console.log(this.toDataURL());
-// 		postImage(this.id,this.toDataURL());
-// 		// console.log($("canvas").get(0).toDataURL());
-// 	})
-
-// 	$("canvas").sketch();
-// }
-
-// function postImage(lvl,dataURL){
-// 	$.ajax({
-// 			url: "/post_image",
-
-// 			data: {
-// 				// name: "<%= name %>",
-// 				level: lvl,
-// 				data: dataURL
-// 			},
-
-// 			type: "POST",
-
-// 			dataType: "text",
-
-// 			success: function(){
-// 				alert('success');
-// 			}
-// 	})
-// }
-
 function download(){
 	$.ajax({
 		url: "/get_save",
@@ -84,9 +7,6 @@ function download(){
 		dataType: "text",
 
 		success: function(save){
-			// cy = cytoscape({
-			// 	elements: JSON.parse(save)
-			// })
 
 			cy = cytoscape({
 				container: document.getElementById('cy'),
@@ -115,87 +35,49 @@ function download(){
 			  
 			  	elements: JSON.parse(save),
 
-			  // 	elements: {
-			  // 		nodes: [
-					// 	{ data: { id: 'x' } },
-					// 	{ data: { id: '2' } },
-					// 	{ data: { id: 'a' } },
-					// 	{ data: { id: '0' } },
-					// 	{ data: { id: 'out' } }
-					// ], 
-			      
-					// edges: [
-					// 	{ data: { id: 'xa', source: 'x', target: 'a' } },
-					// 	{ data: { id: '2a', source: '2', target: 'a' } },
-					// 	{ data: { id: 'aout', source: 'a', target: 'out' } },
-					// 	{ data: { id: '0out', source: '0', target: 'out' } }
-					// ]
-			  //   },
-
 			  	layout: {name: "preset", fit: true}
-			  
-				// layout: {
-				// 	name: 'breadthfirst',
-				// 	directed: true,
-				// 	roots: '#a',
-				// 	padding: 10
-				// }
 			});
 		},
 
 		error: function(xhr,status,errorThrown){
-			cy = cytoscape({
-				container: document.getElementById('cy'),
-			  
-				style: cytoscape.stylesheet()
-				.selector('node')
-					.css({
-						'content': 'data(id)'
-		      		})
-				.selector('edge')
-					.css({
-						'target-arrow-shape': 'triangle',
-						'width': 4,
-						'line-color': '#ddd',
-						'target-arrow-color': '#ddd',
-						'content': 'data(label)'
-					})
-				.selector('.highlighted')
-					.css({
-						'background-color': '#61bffc',
-						'line-color': '#61bffc',
-						'target-arrow-color': '#61bffc',
-						'transition-property': 'background-color, line-color, target-arrow-color',
-						'transition-duration': '0.5s'
-					}),
-			  
-
-			  // 	elements: {
-			  // 		nodes: [
-					// 	{ data: { id: 'x' } },
-					// 	{ data: { id: '2' } },
-					// 	{ data: { id: 'a' } },
-					// 	{ data: { id: '0' } },
-					// 	{ data: { id: 'out' } }
-					// ], 
-			      
-					// edges: [
-					// 	{ data: { id: 'xa', source: 'x', target: 'a' } },
-					// 	{ data: { id: '2a', source: '2', target: 'a' } },
-					// 	{ data: { id: 'aout', source: 'a', target: 'out' } },
-					// 	{ data: { id: '0out', source: '0', target: 'out' } }
-					// ]
-			  //   },
-			  
-				layout: {
-					name: 'breadthfirst',
-					directed: true,
-					roots: '#a',
-					padding: 10
-				}
-			});
+			instantiate();
 		}
 	})
+}
+
+function instantiate(){
+	cy = cytoscape({
+		container: document.getElementById('cy'),
+	  
+		style: cytoscape.stylesheet()
+		.selector('node')
+			.css({
+				'content': 'data(id)'
+      		})
+		.selector('edge')
+			.css({
+				'target-arrow-shape': 'triangle',
+				'width': 4,
+				'line-color': '#ddd',
+				'target-arrow-color': '#ddd',
+				'content': 'data(label)'
+			})
+		.selector('.highlighted')
+			.css({
+				'background-color': '#61bffc',
+				'line-color': '#61bffc',
+				'target-arrow-color': '#61bffc',
+				'transition-property': 'background-color, line-color, target-arrow-color',
+				'transition-duration': '0.5s'
+			}),
+	  
+		layout: {
+			name: 'breadthfirst',
+			directed: true,
+			roots: '#a',
+			padding: 10
+		}
+	});
 }
 
 function upload(save){
@@ -216,9 +98,47 @@ function upload(save){
 	})
 }
 
-$(document).ready(function(){// on dom ready
+function evaluate(val){
+	cy.$('node[id="x"]').data("label",val);
+	return traverse(cy.$('node[id="out"]'));
+}
 
+function traverse(node){
+	//if node has integer id, return that integer
+	//otherwise, return its two children, 
+	//put together with the function defined from the edges
+
+	label = node.data('label');
+	if (label==parseInt(label)){
+		return parseInt(label);
+	}else{
+		var edges = cy.$('edge[target=\"'+label+'\"]');
+		var func = edges[0].data('label');
+		var arg1_id = edges[0].data('source');
+		var arg2_id = edges[1].data('source');
+	
+
+		var arg1_node = cy.$('node[id=\"'+arg1_id+'\"]');
+		var arg2_node = cy.$('node[id=\"'+arg2_id+'\"]');
+		switch(func){
+			case "%":
+				return traverse(arg1_node) % traverse(arg2_node);
+				break;
+			case "=":
+				if (traverse(arg1_node) == traverse(arg2_node))
+					return 1;
+				else
+					return 0;
+				break;
+		}
+	}
+}
+
+
+
+$(document).ready(function(){// on dom ready
 	$("#f_submit").click(function(){
+		console.log("click");
 
 		var arg1 = $('#arg1').val();
 		var arg2 = $('#arg2').val();
@@ -232,40 +152,29 @@ $(document).ready(function(){// on dom ready
 
 		var pos_y = 50;
 		var pos_x = 50;
+		offset1 = 0;
+		offset2 = 100;
 
 		if (cy.getElementById(arg1).id()){
-			// console.log(cy.getElementById(arg1).position('x'));
 			pos_x = cy.getElementById(arg1).position('x');
 			pos_y = cy.getElementById(arg1).position('y');
-			cy.add([
-				{ group: "nodes", data: { id: arg1 }, position: { x: pos_x, y: pos_y } },
-				{ group: "nodes", data: { id: arg2 }, position: { x: pos_x+100, y: pos_y+100 } },
-				{ group: "nodes", data: { id: out_name }, position: { x: pos_x+100, y: pos_y } },
-				{ group: "edges", data: { id: arg1+out_name, label: f_name, source: arg1, target: out_name } },
-				{ group: "edges", data: { id: arg2+out_name, label: f_name, source: arg2, target: out_name } }
-			]);
-		}
-
-		else if (cy.getElementById(arg2).id()){
-			// console.log(cy.getElementById(arg1).position('x'));
+			
+		}else if (cy.getElementById(arg2).id()){
 			pos_x = cy.getElementById(arg2).position('x');
 			pos_y = cy.getElementById(arg2).position('y');
-			cy.add([
-				{ group: "nodes", data: { id: arg1 }, position: { x: pos_x+100, y: pos_y+100 } },
-				{ group: "nodes", data: { id: arg2 }, position: { x: pos_x, y: pos_y } },
-				{ group: "nodes", data: { id: out_name }, position: { x: pos_x+100, y: pos_y } },
-				{ group: "edges", data: { id: arg1+out_name, label: f_name, source: arg1, target: out_name } },
-				{ group: "edges", data: { id: arg2+out_name, label: f_name, source: arg2, target: out_name } }
-			]);
-		}else {
-			cy.add([
-				{ group: "nodes", data: { id: arg1 }, position: { x: pos_x, y: pos_y } },
-				{ group: "nodes", data: { id: arg2 }, position: { x: pos_x+100, y: pos_y+100 } },
-				{ group: "nodes", data: { id: out_name }, position: { x: pos_x+100, y: pos_y } },
-				{ group: "edges", data: { id: arg1+out_name, label: f_name, source: arg1, target: out_name } },
-				{ group: "edges", data: { id: arg2+out_name, label: f_name, source: arg2, target: out_name } }
-			]);
+			offset1 = 100;
+			offset2 = 0;
 		}
+
+		cy.add([
+			{ group: "nodes", data: { id: arg1, label: arg1, }, position: { x: pos_x+offset1, y: pos_y+offset1 } },
+			{ group: "nodes", data: { id: arg2, label: arg2 }, position: { x: pos_x+offset2, y: pos_y+offset2 } },
+			{ group: "nodes", data: { id: out_name, label: out_name }, position: { x: pos_x+100, y: pos_y } },
+			{ group: "edges", data: { id: arg1+out_name, label: f_name, source: arg1, target: out_name } },
+			{ group: "edges", data: { id: arg2+out_name, label: f_name, source: arg2, target: out_name } }
+		]);
+
+		cy = cy.fit();
 
 		var save = cy.elements().jsons();
 
@@ -283,7 +192,7 @@ $(document).ready(function(){// on dom ready
 		// console.log(save);
 
 
-	
+
 		// cy.add([
 		// 	{ group: "nodes", data: { id: arg1 }, position: { x: pos_x, y: pos_y } },
 		// 	{ group: "nodes", data: { id: arg2 }, position: { x: pos_x+100, y: pos_y+100 } },
@@ -293,59 +202,21 @@ $(document).ready(function(){// on dom ready
 		// ]);
 
 	});
-
 	
+	$("#f_eval").click(function(){
+		if (evaluate(2) == 1 && evaluate(1) == 0 &&
+			evaluate(0) == 1 && evaluate(-1) == 0)
+			$("#response").html("SUCCESS!");
+		else
+			$("#response").html("FAILURE!");
+	});
+
+	$("#soln_delete").click(function(){
+		upload("");
+		instantiate();
+	})
+
 
 	download();
-	// console.log(save);
-
-	// if (save){
-	// 	cy.add(JSON.parse(save));
-	// }
-	  
-	// var bfs = cy.elements().bfs('#a', function(){}, true);
-
-	// var i = 0;
-	// var highlightNextEle = function(){
-	//   bfs.path[i].addClass('highlighted');
-	  
-	//   if( i < bfs.path.length ){
-	//     i++;
-	//     setTimeout(highlightNextEle, 1000);
-	//   }
-	// };
-
-	// // kick off first highlight
-	// highlightNextEle();
 
 }); // on dom ready
-
-
-	// plumb();
-	// getImage(1);
-	
-	// $("canvas").sketch();
-	// $("canvas").click(function(){
-	// 	postImage(this.id,$("canvas").get(0).toDataURL());
-	// })
-	// $("button").click(function(){
-		// getImage(this.id);
-
-		// switch (this.id){
-		// 	case "l1":
-		// 		console.log("test");
-		// 		break;
-		// 	case "l2":
-		// 		console.log("test2");
-		// 		break;
-		// 	case "l3":
-		// 		console.log("test3");
-		// 		break;
-		// 	case "l4":
-		// 		console.log("test4");
-		// 		break;
-		// 	case "l5":
-		// 		console.log("test5");
-		// 		break;
-		// }
-	// })
