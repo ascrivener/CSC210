@@ -56,7 +56,7 @@ post '/' do
 			erb :main, :locals => {:name => user}
 		end
 	else
-		db.execute "INSERT INTO Users SELECT '#{user}', '#{pass}', 0 WHERE NOT EXISTS(SELECT * FROM USERS WHERE name='#{user}')"
+		db.execute "INSERT INTO Users SELECT '#{user}', '#{pass}', 1 WHERE NOT EXISTS(SELECT * FROM USERS WHERE name='#{user}')"
 		response.set_cookie(request.ip, :value => user, :expires => Time.now + 3600*24)
 		erb :main, :locals => {:name => user}
 	end
@@ -70,7 +70,8 @@ end
 get '/new_game' do
 	user = request.cookies[request.ip]
 	lev = db.execute "SELECT level FROM Users WHERE name='#{user}'"
-	erb :game, :locals => {:name => user}
+	puts "********************#{lev}***************"
+	erb :game, :locals => {:name => user, :level => lev[0][0]}
 end
 
 get '/continue_game' do
@@ -80,7 +81,11 @@ end
 get '/profile' do
 	user = request.cookies[request.ip]
 	lev = db.execute "SELECT level FROM Users WHERE name='#{user}'"
-	erb :profile, :locals => {:level => lev[0][0]}
+	erb :profile, :locals => {:level => lev[0][0], :user => user}
+end
+
+get '/rules' do
+	erb :rules
 end
 
 post '/post_save' do
@@ -88,18 +93,28 @@ post '/post_save' do
 	# level = params[:level]
 	# data = params[:data]
 	save = params[:save]
+	level = params[:level]
 
 	unless Dir.exists?(File.join("saves","#{user}"))
 		Dir.mkdir(File.join("saves","#{user}"))
 	end
 
-	File.open(File.join("saves","#{user}","data"),"w").write(save)
+	puts "***********************************#{level}******************************"
+
+	File.open(File.join("saves","#{user}","#{level}"),"w").write(save)
 end
 
 get '/get_save' do
 	user = request.cookies[request.ip]
-	# level = params[:level]
-	return File.open(File.join("saves","#{user}","data")).read
+	level = params[:level]
+	return File.open(File.join("saves","#{user}","#{level}")).read
+end
+
+post '/update_level' do
+	user = request.cookies[request.ip]
+	level = params[:lvl]
+	puts "*******************#{level}**************"
+	db.execute "UPDATE Users SET level=#{level} WHERE name = '#{user}'"
 end
 end
 

@@ -1,12 +1,18 @@
-function download(){
+function download(lvl){
 	$.ajax({
 		url: "/get_save",
+
+		data: {
+			level: lvl
+		},
 
 		type: "GET",
 
 		dataType: "text",
 
 		success: function(save){
+
+
 
 			cy = cytoscape({
 				container: document.getElementById('cy'),
@@ -80,12 +86,13 @@ function instantiate(){
 	});
 }
 
-function upload(save){
+function upload(save,lvl){
 	$.ajax({
 		url: "/post_save",
 
 		data: {
-			save: save
+			save: save,
+			level: lvl
 		},
 
 		type: "POST",
@@ -116,6 +123,9 @@ function traverse(node){
 		var func = edges[0].data('label');
 		var arg1_id = edges[0].data('source');
 		var arg2_id = edges[1].data('source');
+
+		console.log(arg1_id);
+		console.log(arg2_id);
 	
 
 		var arg1_node = cy.$('node[id=\"'+arg1_id+'\"]');
@@ -130,6 +140,15 @@ function traverse(node){
 				else
 					return 0;
 				break;
+			case "-":
+				return traverse(arg1_node) - traverse(arg2_node);
+				break;
+			case ">":
+				if (traverse(arg1_node) > traverse(arg2_node))
+					return 1;
+				else
+					return 0;
+				break;
 		}
 	}
 }
@@ -137,8 +156,12 @@ function traverse(node){
 
 
 $(document).ready(function(){// on dom ready
+	cur_level = parseInt($('#level').attr('title'));
+	if (cur_level == 2){
+		$('#level').html("<p></p><h2>Level 2: Write a function that takes an integer between 1 and 100 inclusive, and returns 1 if it is closer to 1 and 0 if it is closer to 100</h2><p></p>");
+	}
 	$("#f_submit").click(function(){
-		console.log("click");
+		// console.log("click");
 
 		var arg1 = $('#arg1').val();
 		var arg2 = $('#arg2').val();
@@ -162,14 +185,14 @@ $(document).ready(function(){// on dom ready
 		}else if (cy.getElementById(arg2).id()){
 			pos_x = cy.getElementById(arg2).position('x');
 			pos_y = cy.getElementById(arg2).position('y');
-			offset1 = 100;
+			offset1 = -100;
 			offset2 = 0;
 		}
 
 		cy.add([
-			{ group: "nodes", data: { id: arg1, label: arg1, }, position: { x: pos_x+offset1, y: pos_y+offset1 } },
-			{ group: "nodes", data: { id: arg2, label: arg2 }, position: { x: pos_x+offset2, y: pos_y+offset2 } },
-			{ group: "nodes", data: { id: out_name, label: out_name }, position: { x: pos_x+100, y: pos_y } },
+			{ group: "nodes", data: { id: arg1, label: arg1, }, position: { x: pos_x+offset1, y: pos_y } },
+			{ group: "nodes", data: { id: arg2, label: arg2 }, position: { x: pos_x+offset2, y: pos_y } },
+			{ group: "nodes", data: { id: out_name, label: out_name }, position: { x: (pos_x+offset1+pos_x+offset2)/2, y: pos_y+50 } },
 			{ group: "edges", data: { id: arg1+out_name, label: f_name, source: arg1, target: out_name } },
 			{ group: "edges", data: { id: arg2+out_name, label: f_name, source: arg2, target: out_name } }
 		]);
@@ -178,7 +201,7 @@ $(document).ready(function(){// on dom ready
 
 		var save = cy.elements().jsons();
 
-		upload(JSON.stringify(save));
+		upload(JSON.stringify(save),cur_level);
 
 		// cy.remove(cy.elements());
 
@@ -204,19 +227,41 @@ $(document).ready(function(){// on dom ready
 	});
 	
 	$("#f_eval").click(function(){
-		if (evaluate(2) == 1 && evaluate(1) == 0 &&
-			evaluate(0) == 1 && evaluate(-1) == 0)
-			$("#response").html("SUCCESS!");
-		else
-			$("#response").html("FAILURE!");
+		console.log(cur_level);
+		if (parseInt(cur_level) == 1){
+			if (evaluate(2) == 1 && evaluate(1) == 0 &&
+				evaluate(0) == 1 && evaluate(-1) == 0){
+					$("#response").html("SUCCESS!");
+					$('#response').append("<p><button id='next_button'>Go to next level!</button></p>");
+					$("#next_button").click(function(){
+						cur_level = parseInt(cur_level)+1;
+						$.post("/update_level", {lvl: cur_level});
+						$("#response").html("");
+						$("#next_button").remove();
+						download(cur_level);
+						$('#level').html("<p></p><h2>Level 2: Write a function that takes an integer between 1 and 100 inclusive, and returns 1 if it is closer to 1 and 0 if it is closer to 100</h2><p></p>");
+					});
+				}
+			else
+				$("#response").html("FAILURE!");
+		}
+		if (parseInt(cur_level) == 2){
+			if (evaluate(1) == 1 && evaluate(100)==0 && evaluate(50) == 1 && evaluate(51)==0){
+					$("#response").html("SUCCESS! YOU WIN!");
+				}
+			else
+				$("#response").html("FAILURE!");
+		}
 	});
 
+	
+
 	$("#soln_delete").click(function(){
-		upload("");
+		upload("[]",cur_level);
 		instantiate();
-	})
+	});
 
 
-	download();
+	download(cur_level);
 
 }); // on dom ready

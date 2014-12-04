@@ -13,11 +13,11 @@
 
 	<body>
 
-
-
 		<p><h1 id="header"></h1></p>
 
 		<div id="cy"></div>
+
+		<div id="level" title=<%= level%>><p><h2>Level 1: write a function that outputs 1 if the input is even, 0 if the input is odd.</h2></p></div>
 
 		<div id="func">
 			<p>Add a new function:</p>
@@ -25,10 +25,13 @@
 			<p>Second arg: <input id="arg2" type=text size="30"/></p>
 			<p>Output name: <input id="out" type=text size="30"/></p>
 			<p>Function name: <input id="func_name" type=text size="30"/></p>
+			<p><h1 id="response"></h1></p>
 			<p><button id="f_submit">Make function</button></p>
 			<!-- <p><button id="soln_submit">Submit solution</button></p> -->
 			<p><button id="soln_delete">Delete solution</button></p>
-			<p><button id="f_eval">Evaluate!</button><h1 id="response"></h1></p>
+			<p><button id="f_eval">Evaluate!</button></p>
+			<p><a href="/dispatch.fcgi">Return</button></p>
+
 		</div>
 
 			

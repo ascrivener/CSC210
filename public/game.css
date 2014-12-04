@@ -8,9 +8,14 @@ body {
   position: absolute;
   left: 0;
   top: 0;
+  padding-top: 10px;
+}
+
+#level{
+	padding-top: 300px;
 }
 
 #func{
-	padding-top: 300px;
-	/*position: absolute;*/
+	/*padding-top: 300px;*/
+	/*position: relative;*/
 }

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head><title>About</title><head>
+<body>
+
+	<h1><p>Rules</h1></p>
+	<!-- <p>Make your own functions and variables in the correct order to beat the level and move on. The input must always be called “x” and the final output must be called “out”, but the other variables and functions can be whatever you think would be the most useful. This is to ensure that our evaluation algorithm can tell that you have the goal completed correctly.</p> -->
+
+	<ol>
+		<li>There must be exactly one node labelled "x", which signifies the input node. x is assumed to be an integer.</li>
+		<li>There must be exactly one function named "out", which signifies the final output.</li>
+		<li>Each function can be one the following (each takes 2 integers as inputs):
+			<ul>
+				<li>"=": This function returns 1 if the inputs are equal, 0 otherwise.</li>
+				<li>">": This function returns 1 if the first input is greater than the second, 0 otherwise.</li>
+				<li>"-": This function returns the second argument subtracted from the first.</li>
+				<li>"%": This function returns the first argument mod the second argument.</li>
+			</ul>
+		</li>
+		<li>The function names must always be letters (i.e. "a", "b", etc)</li>
+		<li>Functions can be given as input:
+			<ul>
+				<li>A function name</li>
+				<li>An integer</li>
+				<li>"x"</li>
+			</ul>
+		</li>
+		<li>As an example, one can construct a function with first argument "x", second argument 2, with name "a". Also, one can construct a function with first argument 2, second argument 35, and name "out".</li>
+	</ol>
+
+	<p><a href='/dispatch.fcgi'>Return</a></p>
+
+</body>
+</html>
